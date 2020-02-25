@@ -289,6 +289,12 @@ class CMake(object):
                 # Parallel for building projects in the solution
                 args.append("/m:%i" % cpu_count(output=self._conanfile.output))
 
+        if self.generator and not self.parallel:
+            if "Ninja" in self.generator:
+                if "--" not in args:
+                    args.append("--")
+                args.append("-j1")
+
         if self.generator and self.msbuild_verbosity:
             if "Visual Studio" in self.generator and \
                     compiler_version and Version(compiler_version) >= "10":
